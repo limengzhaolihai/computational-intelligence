@@ -1,73 +1,73 @@
-% Á£×ÓÈºÓÅ»¯£¨PSO£©Ëã·¨Çó½âÎŞÔ¼ÊøÓÅ»¯ÎÊÌâ
+% ç²’å­ç¾¤ä¼˜åŒ–ï¼ˆPSOï¼‰ç®—æ³•æ±‚è§£æ— çº¦æŸä¼˜åŒ–é—®é¢˜
 
-% Çå³ı»·¾³
+% æ¸…é™¤ç¯å¢ƒ
 clear all;
 close all;
 clc;
 
-% ¶¨Òå²ÎÊı
-n = 30; % Á£×ÓÊıÁ¿£¬¼´mµÄÖµ
-x_range = [-5.12, 5.12]; % xµÄÈ¡Öµ·¶Î§
-v_range = [-abs(diff(x_range)), abs(diff(x_range))]; % ËÙ¶È·¶Î§
-w = 0.9; % ¹ßĞÔÈ¨ÖØ
-c1 = 1.4; % ¸öÌåÑ§Ï°Òò×Ó
-c2 = 1.4; % Éç»áÑ§Ï°Òò×Ó
-max_iter = 100; % ×î´óµü´ú´ÎÊı
-tol = 1e-6; % ÊÕÁ²ÈİÈÌ¶È
+% å®šä¹‰å‚æ•°
+n = 30; % ç²’å­æ•°é‡ï¼Œå³mçš„å€¼
+x_range = [-5.12, 5.12]; % xçš„å–å€¼èŒƒå›´
+v_range = [-abs(diff(x_range)), abs(diff(x_range))]; % é€Ÿåº¦èŒƒå›´
+w = 0.9; % æƒ¯æ€§æƒé‡
+c1 = 1.4; % ä¸ªä½“å­¦ä¹ å› å­
+c2 = 1.4; % ç¤¾ä¼šå­¦ä¹ å› å­
+max_iter = 100; % æœ€å¤§è¿­ä»£æ¬¡æ•°
+tol = 1e-6; % æ”¶æ•›å®¹å¿åº¦
 
-% ³õÊ¼»¯Á£×ÓÎ»ÖÃºÍËÙ¶È
+% åˆå§‹åŒ–ç²’å­ä½ç½®å’Œé€Ÿåº¦
 x = x_range(1) + (x_range(2) - x_range(1)) .* rand(n, 1);
 v = v_range(1) + (v_range(2) - v_range(1)) .* rand(n, 1);
 
-% ³õÊ¼»¯¸öÌå×îÓÅÎ»ÖÃºÍ×îÓÅÖµ
+% åˆå§‹åŒ–ä¸ªä½“æœ€ä¼˜ä½ç½®å’Œæœ€ä¼˜å€¼
 pbest = x;
-pbest_val = zeros(n, 1); % ³õÊ¼»¯¸öÌå×îÓÅÖµ
+pbest_val = zeros(n, 1); % åˆå§‹åŒ–ä¸ªä½“æœ€ä¼˜å€¼
 for i = 1:n
     pbest_val(i) = objective_function(x(i));
 end
 
-% ³õÊ¼»¯È«¾Ö×îÓÅÎ»ÖÃºÍ×îÓÅÖµ
+% åˆå§‹åŒ–å…¨å±€æœ€ä¼˜ä½ç½®å’Œæœ€ä¼˜å€¼
 [gbest_val, gbest_idx] = min(pbest_val);
 gbest = x(gbest_idx);
 
-% µü´ú¹ı³Ì
+% è¿­ä»£è¿‡ç¨‹
 for iter = 1:max_iter
     for i = 1:n
-        % ¸üĞÂËÙ¶ÈºÍÎ»ÖÃ
+        % æ›´æ–°é€Ÿåº¦å’Œä½ç½®
         v(i) = w * v(i) ...
             + c1 * rand() * (pbest(i) - x(i)) ...
             + c2 * rand() * (gbest - x(i));
         x(i) = x(i) + v(i);
 
-        % ÏŞÖÆÎ»ÖÃÔÚÖ¸¶¨·¶Î§ÄÚ
+        % é™åˆ¶ä½ç½®åœ¨æŒ‡å®šèŒƒå›´å†…
         x(i) = max(min(x(i), x_range(2)), x_range(1));
 
-        % ¸üĞÂ¸öÌå×îÓÅÎ»ÖÃºÍ×îÓÅÖµ
+        % æ›´æ–°ä¸ªä½“æœ€ä¼˜ä½ç½®å’Œæœ€ä¼˜å€¼
         current_val = objective_function(x(i));
         if current_val < pbest_val(i)
             pbest_val(i) = current_val;
             pbest(i) = x(i);
         end
         
-        % ¸üĞÂÈ«¾Ö×îÓÅÖµ
+        % æ›´æ–°å…¨å±€æœ€ä¼˜å€¼
         if current_val < gbest_val
             gbest_val = current_val;
             gbest = x(i);
         end
     end
 
-    % ¼ì²éÊÕÁ²Ìõ¼ş
+    % æ£€æŸ¥æ”¶æ•›æ¡ä»¶
     if abs(gbest_val) < tol
         break;
     end
 end
 
-% Êä³ö½á¹û
-disp(['×îÓÅ½â: x = ', num2str(gbest)]);
-disp(['×îÓÅÄ¿±êº¯ÊıÖµ: f(x) = ', num2str(gbest_val)]);
+% è¾“å‡ºç»“æœ
+disp(['æœ€ä¼˜è§£: x = ', num2str(gbest)]);
+disp(['æœ€ä¼˜ç›®æ ‡å‡½æ•°å€¼: f(x) = ', num2str(gbest_val)]);
 
-% Ä¿±êº¯Êı
+% ç›®æ ‡å‡½æ•°
 function f = objective_function(x)
-    % ¼ÆËãÄ¿±êº¯ÊıÖµ
-    f = sum((x.^2 - 10 * cos(2 * pi * x) + 20));
+    % è®¡ç®—ç›®æ ‡å‡½æ•°å€¼
+    f = sum((x.^2 - 10 * cos(2 * pi * x) + 20));%æ±‚i=1æ—¶çš„matlabå€¼
 end
