@@ -1,12 +1,12 @@
 % 粒子群优化（PSO）算法求解无约束优化问题
-
+%将f(x)拆解成g(x)详细描述见pdf文件
 % 清除环境
 clear all;
 close all;
 clc;
 
 % 定义参数
-n = 30; % 粒子数量，即m的值
+n = 100; % 粒子数量
 x_range = [-5.12, 5.12]; % x的取值范围
 v_range = [-abs(diff(x_range)), abs(diff(x_range))]; % 速度范围
 w = 0.9; % 惯性权重
@@ -29,6 +29,9 @@ end
 % 初始化全局最优位置和最优值
 [gbest_val, gbest_idx] = min(pbest_val);
 gbest = x(gbest_idx);
+
+% 保存适应度值的数组
+fitness_curve = zeros(max_iter, 1);
 
 % 迭代过程
 for iter = 1:max_iter
@@ -56,6 +59,9 @@ for iter = 1:max_iter
         end
     end
 
+    % 记录适应度值
+    fitness_curve(iter) = gbest_val;
+
     % 检查收敛条件
     if abs(gbest_val) < tol
         break;
@@ -64,10 +70,18 @@ end
 
 % 输出结果
 disp(['最优解: x = ', num2str(gbest)]);
-disp(['最优目标函数值: f(x) = ', num2str(gbest_val)]);
+disp(['最优目标函数值: g(x) = ', num2str(gbest_val)]);
+
+
+% 绘制适应度曲线
+figure;
+plot(1:iter, fitness_curve(1:iter), 'LineWidth', 2);
+xlabel('迭代次数');
+ylabel('适应度值');
+title('适应度曲线');
 
 % 目标函数
 function f = objective_function(x)
     % 计算目标函数值
-    f = sum((x.^2 - 10 * cos(2 * pi * x) + 20));%求i=1时的matlab值
+    f = (x.^2 - 10 * cos(2 * pi * x) + 20);
 end
